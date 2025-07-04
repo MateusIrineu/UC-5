@@ -1,0 +1,1 @@
+import produtos from "./src/config/database";
