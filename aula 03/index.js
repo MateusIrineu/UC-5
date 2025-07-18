@@ -1,7 +1,8 @@
 import express from "express";
-import { configDotenv } from "dotenv"
+// import { configDotenv } from "dotenv"
 import CriarTabelas from "./src/config/criartabela.js";
-import routeProduto from "./src/modules/produto/routes/produto.route";
+import routeProduto from "./src/modules/produto/routes/produto.route.js";
+import dotenv from "dotenv";
 
 dotenv.config()
 

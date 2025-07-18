@@ -7,7 +7,7 @@ class ProdutoController {
             if(!nome || !preco || !descricao) {
         return res.status(400).json({ message: 'Erro do cliente.' })
     }
-        ProdutoModel.cadastrar(nome, preco, descricao)
+        await ProdutoModel.cadastrar(nome, preco, descricao)
         res.status(201).json({ message: 'Produto criado com sucesso!' })
         } catch (error) {
             res.status(500).json({ message: 'Erro interno do servidor. Por favor, tente mais tarde', erro: error.message });
@@ -15,21 +15,24 @@ class ProdutoController {
     }
     static async listarTodos(req, res) {
         try {
-            const produtos = ProdutoModel.listarTodos()
+            const produtos = await ProdutoModel.listarTodos()
             if (produtos.length === 0) {
-                res.status(200).json({ message: 'Produtos listados com sucesso!' })
+                res.status(200).json({ message: 'Banco vazio.' })
             }
+
+            res.status(200).json(produtos);
+
         } catch (error) {
-            
+            res.status(500).json({ message: 'Erro interno do servidor. Por favor, tente mais tarde', erro: error.message });
         }
     }
 
     static async listarPorId(req, res) {
         try {
             const id = parseInt(req.params.id)
-            const produto = ProdutoModel.listarPorId(id)
+            const produto = await ProdutoModel.listarPorId(id)
             
-            if(!produto.length === 0) {
+            if(!produto) {
                 return res.status(404).json({ message: 'Produto não encontrado' })
             }
 
@@ -42,17 +45,17 @@ class ProdutoController {
 
     static async atualizar(req, res) {
         try {
-            const { novoNome, novoPreco, novaDescricao } = req.body
             const id = parseInt(req.params.id);
-            const produto = ProdutoModel.atualizar(id, novoNome, novoPreco, novaDescricao)
+            const { nome, preco, descricao } = req.body
+            const produto = await ProdutoModel.atualizar(id, nome, preco, descricao)
 
-            if(produto.length === 0) {
+            if(!produto) {
                 return res.status(404).json({ message: 'Produto não encontrado' })
             }
 
-            produto.nome = novoNome || produto.nome
-            produto.preco = novoPreco || produto.preco
-            produto.descricao = novaDescricao || produto.descricao
+            produto.nome = nome || produto.nome
+            produto.preco = preco || produto.preco
+            produto.descricao = descricao || produto.descricao
             res.status(200).json({ message: 'Produto atualizado com sucesso!' })
 
         } catch (error) {
@@ -61,13 +64,12 @@ class ProdutoController {
     }
     static async deletarPorId(req, res) {
         try {
-
             const id = parseInt(req.params.id)
-            const produto = ProdutoModel.deletarPorId(id)
-            if (!produto.length === 0) {
+            const produto = await ProdutoModel.deletarPorId(id)
+            if (!produto) {
                 return res.status(404).json({ message: 'Produto não encontrado' })
             }
-            return res.status(200).json({ message: 'Produto deletado com sucesso.' })
+            res.status(200).json({ message: 'Produto deletado com sucesso.' })
         } catch (error) {
             res.status(500).json({ message: 'Erro interno do servidor. Por favor, tente mais tarde', erro: error.message })
         }
@@ -75,11 +77,28 @@ class ProdutoController {
 
     static async deletarTodos(req, res) {
         try {
-            ProdutoModel.deletarTodos()
+           await ProdutoModel.deletarTodos()
+
+           res.status(200).json({ message: 'Todos os produtos foram deletados com sucesso.' });
         } catch (error) {
-            
+            res.status(500).json({ message: 'Erro interno do servidor. Por favor, tente mais tarde', erro: error.message });
+        }
+    }
+
+    static async totalProdutos(req, res) {
+        try {
+            const total = await ProdutoModel.totalProdutos();
+            res.status(200).json(total);
+        } catch (error) {
+            res.status(500).json({ message: 'Erro interno do servidor. Por favor, tente mais tarde', erro: error.message });
         }
     }
 }
+
+// try 
+// const algo = await class.metodo()
+// if (!algo) { req.status }
+// catch
+// res.status
 
 export default ProdutoController;

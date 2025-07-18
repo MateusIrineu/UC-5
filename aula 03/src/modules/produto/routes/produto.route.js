@@ -1,5 +1,5 @@
 import express from 'express';
-import ProdutoController from '../controllers/produto.controller';
+import ProdutoController from '../controllers/produto.controller.js';
 
 const router = express.Router()
 
@@ -20,6 +20,9 @@ router.patch("/produto/atualizar/:id", ProdutoController.atualizar);
 router.delete("/produto/deletar/:id", ProdutoController.deletarPorId);
 
 // Deletar todos
-router.delete("/produtos", ProdutoController.deletarTodos);
+router.delete("/produtos/deletar", ProdutoController.deletarTodos);
+
+// Total de produtos
+router.get("/produtos/total", ProdutoController.totalProdutos);
 
 export default router;
