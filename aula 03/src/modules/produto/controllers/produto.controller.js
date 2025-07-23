@@ -7,15 +7,15 @@ class ProdutoController {
             if(!nome || !preco || !descricao) {
         return res.status(400).json({ message: 'Erro do cliente.' })
     }
-        await ProdutoModel.cadastrar(nome, preco, descricao)
-        res.status(201).json({ message: 'Produto criado com sucesso!' })
+        const produto = await ProdutoModel.create({nome, preco, descricao})
+        res.status(201).json({ message: 'Produto criado com sucesso!', produto: produto })
         } catch (error) {
             res.status(500).json({ message: 'Erro interno do servidor. Por favor, tente mais tarde', erro: error.message });
         }
     }
     static async listarTodos(req, res) {
         try {
-            const produtos = await ProdutoModel.listarTodos()
+            const produtos = await ProdutoModel.findAll()
             if (produtos.length === 0) {
                 res.status(200).json({ message: 'Banco vazio.' })
             }
@@ -30,7 +30,7 @@ class ProdutoController {
     static async listarPorId(req, res) {
         try {
             const id = parseInt(req.params.id)
-            const produto = await ProdutoModel.listarPorId(id)
+            const produto = await ProdutoModel.findByPk(id)
             
             if(!produto) {
                 return res.status(404).json({ message: 'Produto não encontrado' })
@@ -47,9 +47,9 @@ class ProdutoController {
         try {
             const id = parseInt(req.params.id);
             const { nome, preco, descricao } = req.body
-            const produto = await ProdutoModel.atualizar(id, nome, preco, descricao)
+            const produto = await ProdutoModel.update( { id, nome, preco, descricao }, { where: { id } })
 
-            if(!produto) {
+            if(!produto || produto.length === 0) {
                 return res.status(404).json({ message: 'Produto não encontrado' })
             }
 
@@ -65,7 +65,7 @@ class ProdutoController {
     static async deletarPorId(req, res) {
         try {
             const id = parseInt(req.params.id)
-            const produto = await ProdutoModel.deletarPorId(id)
+            const produto = await ProdutoModel.destroy({ where: { id } })
             if (!produto) {
                 return res.status(404).json({ message: 'Produto não encontrado' })
             }
@@ -77,7 +77,7 @@ class ProdutoController {
 
     static async deletarTodos(req, res) {
         try {
-           await ProdutoModel.deletarTodos()
+           await ProdutoModel.destroy({ truncate: true })
 
            res.status(200).json({ message: 'Todos os produtos foram deletados com sucesso.' });
         } catch (error) {
@@ -85,14 +85,14 @@ class ProdutoController {
         }
     }
 
-    static async totalProdutos(req, res) {
-        try {
-            const total = await ProdutoModel.totalProdutos();
-            res.status(200).json(total);
-        } catch (error) {
-            res.status(500).json({ message: 'Erro interno do servidor. Por favor, tente mais tarde', erro: error.message });
-        }
-    }
+    // static async totalProdutos(req, res) {
+    //     try {
+    //         const total = await ProdutoModel.totalProdutos();
+    //         res.status(200).json(total);
+    //     } catch (error) {
+    //         res.status(500).json({ message: 'Erro interno do servidor. Por favor, tente mais tarde', erro: error.message });
+    //     }
+    // }
 }
 
 // try 
