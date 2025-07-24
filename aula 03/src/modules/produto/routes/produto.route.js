@@ -23,6 +23,6 @@ router.delete("/produto/deletar/:id", ProdutoController.deletarPorId);
 router.delete("/produtos/deletar", ProdutoController.deletarTodos);
 
 // Total de produtos
-router.get("/produtos/total", ProdutoController.totalProdutos);
+// router.get("/produtos/total", ProdutoController.totalProdutos);
 
 export default router;

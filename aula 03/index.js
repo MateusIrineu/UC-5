@@ -1,9 +1,10 @@
 import express from "express";
 // import { configDotenv } from "dotenv"
 // import CriarTabelas from "./src/config/criartabela.js";
-import sequelize from "./src/config/database.js";
 import routeProduto from "./src/modules/produto/routes/produto.route.js";
 import dotenv from "dotenv";
+
+import "./src/config/database.js";
 
 dotenv.config()
 
@@ -16,11 +17,8 @@ app.use(routeProduto)
 app.listen(port, async () => {
 
     try {
-        await sequelize.sync({force: true, alter: true})
-        console.log('Tabela Criada')
+        console.log(`Servidor rodando na porta ${port}`);
     } catch (error) {
-        console.log('Erro')
+        console.log('Erro ao abrir o servidor', error = error.message)
     }
-
-    console.log(`Servidor rodando na porta ${port}`);
 });

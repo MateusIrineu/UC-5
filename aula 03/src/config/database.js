@@ -18,7 +18,9 @@ const sequelize = new Sequelize(
 
 try {
   await sequelize.authenticate();
-  console.log('Connection has been established successfully.');
+  console.log('Conexão realizada com sucesso!');
+  await sequelize.sync({ force: true, alter: true })
+  console.log('Tabela produto criada com sucesso.')
 } catch (error) {
   console.error('Unable to connect to the database:', error.message);
 }
